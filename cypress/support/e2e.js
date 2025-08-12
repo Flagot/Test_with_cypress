@@ -14,4 +14,18 @@
 // ***********************************************************
 
 // Import commands.js using ES2015 syntax:
-import './commands'
+import "./commands";
+const originalLog = Cypress.log;
+
+Cypress.log = (options) => {
+  if (
+    options.name === "xhr" &&
+    options.consoleProps &&
+    options.consoleProps.URL &&
+    options.consoleProps.URL.includes("localhost:4000/socket.io")
+  ) {
+    // Skip logging this xhr request
+    return null;
+  }
+  return originalLog(options);
+};
